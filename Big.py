@@ -5,7 +5,6 @@ import pandas as pd
 import pyodbc 
 import time
 
-
 from sklearn.datasets import load_iris
 
 fields = ['Complaint Type', 'Borough', 'Agency Name']
@@ -13,13 +12,12 @@ Userchunksize = 100000
 
 #df = pd.read_csv("data.csv", usecols=['Agency Name', 'Complaint Type', 'Borough'])
 
-
 print("---------------Load---------------------")
 start_time_insert = time.time()
 for chunk in pd.read_csv("data.csv", chunksize=Userchunksize, usecols=fields):
 
 print("--- %s seconds ---" % (time.time() - start_time_insert))
-print("---------------Load-END---------------------")
+print("---------------Load-END-----------------")
 print("")
 
 
@@ -42,7 +40,6 @@ onlyAgencyName.value_counts()
 print("--- %s seconds ---" % (time.time() - start_time_process2))
 print(onlyAgencyName.value_counts())
 print("---------------!Agency Name!---------------------")
-
 
 #3
 print("--------P3--Complaint Type per Borough-----------")
