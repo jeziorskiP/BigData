@@ -43,6 +43,8 @@ cursor.close()
 print("--- %s seconds ---" % (time.time() - start_time_insert))
 print("---------------Insert-END---------------------")
 print("")
+
+#option1 END
 """
 
 
@@ -87,6 +89,7 @@ cursor.close()
 
 print("---------------inserted---------------------")
 
+#Option2 END
 
 
 

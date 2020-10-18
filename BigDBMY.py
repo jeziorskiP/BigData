@@ -17,17 +17,20 @@ conn = mysql.connector.connect(user='root', password='root',
 
 cursor = conn.cursor()
 
-"""
 #
 #First, we should create database. Use BigData1.sql to create database and table.
 #Then, we should prepare data file - you can skip this part, if you've got fitting dataset. We want only 3 columns (it saves a lot of time.)
 #Result: new.csv -> 4 columns ( ID and all necesery 'Complaint Type', 'Borough', 'Agency Name'  )
 #
+
+#Data preparation
+"""
 start_time_processData = time.time()
 df = pd.read_csv("data.csv", usecols=fields)
 print("OUT")
 df.to_csv("new.csv")
 print("--- %s seconds ---" % (time.time() - start_time_processData))
+#Data preparation END
 """
 
 #Inserting data to database
@@ -40,6 +43,8 @@ start_time_process111 = time.time()
 cursor.execute(sqlQuery)
 print("--- %s seconds ---" % (time.time() - start_time_process111))
 #Without commit.  Commit is killing my computer
+
+#Option1 - END
 
 """
 #Inserting data to database
@@ -59,6 +64,8 @@ cursor.close()
 print("--- %s seconds ---" % (time.time() - start_time_insert))
 print("---------------Insert-END---------------------")
 print("")
+
+#Option2 END
 """
 
 #1
