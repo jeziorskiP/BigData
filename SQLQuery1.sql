@@ -2,6 +2,7 @@ create database BigData
 
 create table info
 (
+
 	ComplaintType varchar(200),
 	AgencyName varchar(200),
 	Borough varchar(200)

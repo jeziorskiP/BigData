@@ -17,7 +17,34 @@ conn = mysql.connector.connect(user='root', password='root',
 
 cursor = conn.cursor()
 
-#Insert Data
+"""
+#
+#First, we should create database. Use BigData1.sql to create database and table.
+#Then, we should prepare data file - you can skip this part, if you've got fitting dataset. We want only 3 columns (it saves a lot of time.)
+#Result: new.csv -> 4 columns ( ID and all necesery 'Complaint Type', 'Borough', 'Agency Name'  )
+#
+start_time_processData = time.time()
+df = pd.read_csv("data.csv", usecols=fields)
+print("OUT")
+df.to_csv("new.csv")
+print("--- %s seconds ---" % (time.time() - start_time_processData))
+"""
+
+#Inserting data to database
+#Option1 - faster
+
+#datafile (new.csv) should be there: SHOW VARIABLES LIKE "secure_file_priv"; 
+sqlQuery = "LOAD DATA  INFILE 'D:/Programy/MySQL/MySQL Server 8.0/Uploads/new.csv' INTO TABLE info FIELDS TERMINATED BY ','  ENCLOSED BY '\"' LINES TERMINATED BY '\r\n' IGNORE 1 LINES (Id,AgencyName,ComplaintType, Borough);"
+
+start_time_process111 = time.time()
+cursor.execute(sqlQuery)
+print("--- %s seconds ---" % (time.time() - start_time_process111))
+#Without commit.  Commit is killing my computer
+
+"""
+#Inserting data to database
+#Option2 - slower, using chunks
+
 insertQuery = "insert into info (ComplaintType, AgencyName, Borough) values (%s, %s, %s)"
 print("---------------Insert---------------------")
 
@@ -26,13 +53,13 @@ for chunk in pd.read_csv("data.csv", chunksize=Userchunksize, usecols=fields):
     for index, row in chunk.iterrows():
         val = (row[1], row[0], row[2])
         cursor.execute(insertQuery, val)
-    conn.commit()    
+    conn.commit()
     print("---------------Commit---------------------")
 cursor.close()
 print("--- %s seconds ---" % (time.time() - start_time_insert))
 print("---------------Insert-END---------------------")
 print("")
-
+"""
 
 #1
 print("---------------P1---------------------")
@@ -44,7 +71,7 @@ for row in cursor:
     print(row)
 print("---------------------------------------")
 
-#2
+#2 extremely slow ~11h
 print("---------------P2---------------------")
 start_time_process2 = time.time()
 cursor.execute('select Borough, ComplaintType,  count(ComplaintType) as cnt from info as i group by Borough, ComplaintType having i.ComplaintType = (\
