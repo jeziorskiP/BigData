@@ -1,13 +1,12 @@
 create database BigData
-
+use BigData;
 create table info
 (
-
-	ComplaintType varchar(200),
+	Id varchar(200), 
 	AgencyName varchar(200),
+	ComplaintType varchar(200),
 	Borough varchar(200)
-)
-
+);
 
 select * from info
 insert into info values ('Test', 'Test', 'Test');
