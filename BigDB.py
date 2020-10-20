@@ -28,7 +28,6 @@ print("---------------Insert---------------------")
 
 
 
-"""
 #option1 - slow, using chunks
 
 insertQuery = '''insert into info (ComplaintType, AgencyName, Borough) values (?, ?, ?);'''
@@ -45,7 +44,6 @@ print("---------------Insert-END---------------------")
 print("")
 
 #option1 END
-"""
 
 
 #Option2 faster, but with special sprepared file
@@ -53,9 +51,11 @@ print("")
 #
 #First, we should create database. Use SqlQuery.sql to create database and table.
 #Then, we should prepare data file - you can skip this part, if you've got fitting dataset. We want only 3 columns (it saves a lot of time.)
-#Result: new.csv -> 4 columns ( ID and all necesery 'Complaint Type', 'Borough', 'Agency Name'  )
+#Result: new.csv -> 4 columns ( ID and all necesery 'Complaint Type', 'Borough', 'Agency Name'  ) sep = '
+#Result: new2.csv -> 4 columns ( ID and all necesery 'Complaint Type', 'Borough', 'Agency Name'  ) sep = |
 #
 
+"""
 start_time_load = time.time()
 df = pd.read_csv("data.csv", usecols=fields)
 print("--- %s seconds ---" % (time.time() - start_time_load))
@@ -68,15 +68,10 @@ print("--- %s seconds ---" % (time.time() - start_time_write))
 print("Processing time: %s secunds" % (time.time() - start_time_load))
 
 
-sql = """
-BULK INSERT BigData..info
-FROM 'D:\\Programy\\BigData\\new.csv' WITH (
-    FIELDTERMINATOR=',',
-    ROWTERMINATOR='\\n',
-    firstrow = 2
-    )
-"""
-   
+# sql = """BULK INSERT BigData..info FROM 'D:\\Programy\\BigData\\new.csv' WITH (FIELDTERMINATOR=',',ROWTERMINATOR='\\n', firstrow = 2)"""
+
+
+
 start_time_insert2 = time.time() 
 cursor.execute(sql)
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -91,6 +86,7 @@ print("---------------inserted---------------------")
 
 #Option2 END
 
+"""
 
 
 #1

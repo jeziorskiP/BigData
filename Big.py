@@ -28,7 +28,7 @@ print("")
 df = df_concat
 
 
-
+"""
 #LoadOption2
 print("---------------Load---------------------")
 start_time_insert2 = time.time()
@@ -36,7 +36,7 @@ df = pd.read_csv("data.csv", usecols=fields )
 print("--- %s seconds ---" % (time.time() - start_time_insert2))
 print("---------------Load-END-----------------")
 print("")
-
+"""
 
 
 #1
@@ -56,7 +56,6 @@ onlyComplaimentType = df.groupby(['Complaint Type']).size().idxmax(0)
 print("--- %s seconds ---" % (time.time() - start_time_process11))
 print(onlyComplaimentType)
 print("---------------!Complaint Type!-----------------\n\n")
-
 
 #2
 print("--------P2.1--Complaint Type per Borough-----------")

@@ -30,19 +30,6 @@ having i.ComplaintType = (
 					order by count(*) desc, i2.ComplaintType
 				)			
 
-				/*
-select Borough, ComplaintType,  count(*) as cnt from info
-group by Borough, ComplaintType
-having count(*) = 
-(
-	select max(cnt) as highest
-	from 
-		(
-			select Borough, ComplaintType,  count(*) as cnt from info
-			group by Borough, ComplaintType
-		) as tem
-)
-*/
 --3
 select top(1) AgencyName, count(*) as cnt from info
 group by AgencyName

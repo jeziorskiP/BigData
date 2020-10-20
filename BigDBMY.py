@@ -17,6 +17,9 @@ conn = mysql.connector.connect(user='root', password='root',
 
 cursor = conn.cursor()
 
+conn.rollback()
+print("X")
+time.sleep(10)
 #
 #First, we should create database. Use BigData1.sql to create database and table.
 #Then, we should prepare data file - you can skip this part, if you've got fitting dataset. We want only 3 columns (it saves a lot of time.)

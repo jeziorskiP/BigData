@@ -15,7 +15,6 @@ create table info
 SET SQL_SAFE_UPDATES = 0;
 SHOW VARIABLES LIKE "secure_file_priv"; 
 
-select count(*) from info;
 select * from info;
 
 #query
