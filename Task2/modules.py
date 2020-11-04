@@ -15,8 +15,7 @@ from pyspark import SparkConf, SparkContext
 # Do utowrzenia kombinacji użyto itertools i combinations
 # Finalnie otrzymamy ((U1,U2),1) => U1,U2 - para użytkowników mających 1 wspolnego znajomego.
 
-def combineFriends(UserWithFriends):   #user_friendslist
-	#from_user = UserWithFriends[0]
+def combineFriends(UserWithFriends):
 	FriendList = UserWithFriends[1]
 	return [(pair, 1) for pair in it.combinations(FriendList, 2)]
 
