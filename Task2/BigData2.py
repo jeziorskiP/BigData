@@ -179,30 +179,19 @@ FinalRecommendation = RecommendationListWOCnt.collectAsMap()
 print("FinalRecommendation")
 print("DONE")
 
-def DataToFile(RecomMap, UserKeyList, N, fileName):
-    stream = open(fileName, 'w+')
-    for key in UserKeyList:
-        if key in RecomMap:
-            length = min(len(RecomMap[key]), N)
-            s = ','.join(str(e) for e in RecomMap[key][:length])
-            print(str(key) +"\t"+ str(s),file=stream)
-        else:
-            print(str(key), file=stream)
-    stream.close()
-
 
 print("Saving...")
 
 if Choice == 1:
-    DataToFile(FinalRecommendation, AllUsersSortedList, AmountOfRec, 'AllUsersOutput.txt')
+    M.DataToFile(FinalRecommendation, AllUsersSortedList, AmountOfRec, 'AllUsersOutput.txt')
 elif Choice == 2:
-    DataToFile(FinalRecommendation, CustomList, AmountOfRec, 'CustomUserListOutput.txt')
+    M.DataToFile(FinalRecommendation, CustomList, AmountOfRec, 'CustomUserListOutput.txt')
 elif Choice == 3:
     TemplateUserList = [924, 8941, 8942, 9019, 9020, 9021, 9022, 9990, 9992, 9993]
-    DataToFile(FinalRecommendation, TemplateUserList, AmountOfRec, 'TemplateUserListOutput.txt')
+    M.DataToFile(FinalRecommendation, TemplateUserList, AmountOfRec, 'TemplateUserListOutput.txt')
 elif Choice == 4:
     UserNo11 = [11]
-    DataToFile(FinalRecommendation, UserNo11, AmountOfRec, 'UserNo11Output.txt')
+    M.DataToFile(FinalRecommendation, UserNo11, AmountOfRec, 'UserNo11Output.txt')
 else:
     print("error")
 

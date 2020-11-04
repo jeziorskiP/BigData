@@ -35,9 +35,6 @@ def transform(accumulatedDict, currentDict):
 
 
 # Zgodnie z wymaganiami dane musza być posortowane malejąca po ilości znajomych i rosnąco w ramach grupy znajomych.
-# define custom map function
-# Input: (user, {cnt1: [...], cnt2: [...], ...})
-# Output (user, [(cnt1, [..]), (cnt2, [.]), ..]), cnt - descending, [...] - ascending
 def Sorting(row):
 	FriendsForRecommendation = []
 	ShuffleFriends = row[1]
@@ -60,22 +57,17 @@ def reduceAndMergeList(row):
             ReducedList.append(RecomList[i][1][j]) # [i][1][j]; 1-> tylko rekomendacje, ilość nieistotna.
     return (user, ReducedList)
 
-# Define print function
-# pMap - map to print
-# pList - list of keys
-#     N - upto N per key
-# fname - file print to
-def pMap2file(pMap, pList, N, fname):
-    fp = open(fname, 'w+')
-    for k in pList:
-        if k in pMap:
-            plen = min(len(pMap[k]), N)     # N to max ilość wyswietlanych rekomendacji. jeśli wiersz ma wiecej rekomendacji to N.
-            for e in pMap[k][:plen]:
-                s=','.join(str(e) )
-            #s = ','.join(str(e) for e in pMap[k][:plen])
-            print(str(k) +"\t"+ str(s),file=fp)
+def DataToFile(RecomMap, UserKeyList, N, fileName):
+    stream = open(fileName, 'w+')
+    for key in UserKeyList:
+        if key in RecomMap:
+            length = min(len(RecomMap[key]), N)
+            s = ','.join(str(e) for e in RecomMap[key][:length])
+            print(str(key) +"\t"+ str(s),file=stream)
         else:
-            print(str(k), file=fp)
-    fp.close()
+            print(str(key), file=stream)
+    stream.close()
+
+
 
 
