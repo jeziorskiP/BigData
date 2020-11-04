@@ -52,15 +52,15 @@ sc = SparkContext(conf=sparkConf)
 print("SparkContext initiated ")
 
 # Wczytywanie danych z pliku do programu
-loadedData = sc.textFile(DataSetFileName)  # friendLines
+loadedData = sc.textFile(DataSetFileName)
 print("Data loaded")
 
 # loadedData to ciąg znaków, więc należy je podzielić na User i Friend
 # '0  1,2,3,' => '0' '1,2,3'
-splittedUserAndFriend = loadedData.map(lambda l: l.split()) # user_friends
+splittedUserAndFriend = loadedData.map(lambda l: l.split())
 
 print("Splitted data. User - Friends ")
-print(splittedUserAndFriend) # tutaj jest mapa!!! Wiec mozna tego nie wyswietlac
+print(splittedUserAndFriend)
 
 
 # Lista użytkowników, dla których będą realizowane rekomendacje.
@@ -78,7 +78,7 @@ print(sample)
 
 
 # Filtrujemy te krotki, ktore skłądają się z dwóch elementów (Użytkownik + Znajomi). Użytkownicy bez znajomych są bezużyteczni.
-FiltredUsersWithFriends = splittedUserAndFriend.filter(lambda e: len(e) == 2)    #user_w_friends
+FiltredUsersWithFriends = splittedUserAndFriend.filter(lambda e: len(e) == 2)
 
 print("FiltredUsersWithFriends")
 print("DONE!")
@@ -86,7 +86,7 @@ print("DONE!")
 # FiltredUsersWithFriends skłąda się z ('U', 'f1,f2,..'). 
 # Rozdzielamy znajomych na pojedyncze elementy (int) - separator ','- i przechowujemy w tablicy - dokładniej w map(wydajniejsza)
 # Otrzymujemy Użytkownik - mapa znajomych(int), posortowanych rosnąco
-UsersWithFriendsMap = FiltredUsersWithFriends.map(lambda row: (int(row[0]), map(int, sorted(  row[1].split(',') ) )))  #user_friendList
+UsersWithFriendsMap = FiltredUsersWithFriends.map(lambda row: (int(row[0]), map(int, sorted(  row[1].split(',') ) )))
 
 print("UsersWithFriendsMap")
 sam = UsersWithFriendsMap.take(5)
@@ -103,7 +103,7 @@ print(sam)
 # Do utowrzenia kombinacji użyto itertools i combinations
 # Finalnie otrzymamy ((U1,U2),1) => U1,U2 - para użytkowników mających 1 wspolnego znajomego.
 
-matchedFriends = UsersWithFriendsMap.map(M.combineFriends).flatMap(lambda x: x) #pairs_from_commonFriend
+matchedFriends = UsersWithFriendsMap.map(M.combineFriends).flatMap(lambda x: x)
 
 print("matchedFriends")
 sam1 = matchedFriends.take(5)
@@ -111,7 +111,7 @@ print(sam1)
 
 
 # Tutaj następuje grupowanie opisane wyżej. Za pomocą reduceByKey, dla tych samych kluczy obliczana jest suma wystąpień.
-matchedFriendsWithCount = matchedFriends.reduceByKey(lambda accumulatedValue, currentValue: accumulatedValue + currentValue) #pairs_CntOf_commonFriends
+matchedFriendsWithCount = matchedFriends.reduceByKey(lambda accumulatedValue, currentValue: accumulatedValue + currentValue)
 
 print("matchedFriendsWithCount")
 sam2 = matchedFriendsWithCount.take(5)
@@ -121,7 +121,7 @@ print(sam2)
 # Wsród tych par znajdują się takie które są już znajomymi. Należy je usunąć. 
 # Do tego użyjemy danych z UsersWithFriendsMap
 
-UserFriendDictionary = UsersWithFriendsMap.collectAsMap() #user2friendsMap
+UserFriendDictionary = UsersWithFriendsMap.collectAsMap()
 
 print("UserFriendDictionary")
 print("DONE")
@@ -130,7 +130,7 @@ print("DONE")
 # Działanie: dla danego elementu z matchedFriendsWithCount: ((1,11), 2)
 # item[0][0] = 1("uzytkownik"), item[0][1] = 11 ("znajomy"), item[1] = 2
 # Znajomi, ktorzy nie sa w znajomych tego użytkownika
-matchedFriendsWithCountWOSingle = matchedFriendsWithCount.filter(lambda item: item[0][1] not in UserFriendDictionary[item[0][0]]) #pairs_hasCommon_yetFriends
+matchedFriendsWithCountWOSingle = matchedFriendsWithCount.filter(lambda item: item[0][1] not in UserFriendDictionary[item[0][0]])
 
 print("matchedFriendsWithCountWOSingle")
 sam4 = matchedFriendsWithCountWOSingle.take(5)
@@ -142,7 +142,7 @@ print(sam4)
 # Aby to otrzymać poprzednio otrzymane pary z ilością wspolnych znajomych rozdzielamy by otrzymać "Użytkownika + ilosc wspolnych znajmoych + z jakim użytkownikiem"
 # Rozdzielamy utworzone pary, tak, aby otrzymać użytkownika wraz z informają ile on ma wspolnych znajomych z danym użytkownikiem.
 # ((U1,U2), 3) => (U1, {3,U2}) (U2, {3, U1})
-UserWithCntAndFriend = matchedFriendsWithCountWOSingle.map(lambda pC: [(pC[0][0], {pC[1]: [pC[0][1]]}), (pC[0][1], {pC[1]: [pC[0][0]]})]).flatMap(lambda x: x) #user_recommendList_byShareCnt
+UserWithCntAndFriend = matchedFriendsWithCountWOSingle.map(lambda pC: [(pC[0][0], {pC[1]: [pC[0][1]]}), (pC[0][1], {pC[1]: [pC[0][0]]})]).flatMap(lambda x: x)
 UserWithCntAndFriend
 
 print("UserWithCntAndFriend")
@@ -152,7 +152,7 @@ print("UserWithCntAndFriend")
 # Używamy reduceByKey i zdefiniowanej funkcji. 
 # Dla elementów z tymi samymi kluczami- dodajemy wartość spod klucza do tablicy, jesli nie ma takiego klucza, to tworzymy nową tablice z tą wartością.
 
-UserWithCntAndFriendList = UserWithCntAndFriend.reduceByKey(M.transform)    #recommendList_byShareCnt
+UserWithCntAndFriendList = UserWithCntAndFriend.reduceByKey(M.transform)
 
 print("UserWithCntAndFriendList")
 sam5 = UserWithCntAndFriendList.take(5)
@@ -161,7 +161,7 @@ print(sam5)
 
 # Zgodnie z wymaganiami dane musza być posortowane malejąca po ilości znajomych i rosnąco w ramach grupy znajomych.
 # (U1, {3, [U4, U4], 6 [U7, U8, U9]}) => (U1, [ (6, [U7, U8, U9]), (3, [U3, U4] ])  ) 
-RecommendationWithCnt = UserWithCntAndFriendList.map(M.Sorting)    #recommends
+RecommendationWithCnt = UserWithCntAndFriendList.map(M.Sorting)
 
 print("RecommendationWithCnt")
 sam6 = RecommendationWithCnt.take(1)
@@ -170,16 +170,16 @@ sam6 = RecommendationWithCnt.take(1)
 # Zmieniamy format (U1, [ (3, [U3, U4]), (2, [U6, U9, U11]) ] ) usuwając ilości i łącząc listy.
 # Oczekiwanie: (U1, [U3, U4, U6, U9])
 
-RecommendationListWOCnt = RecommendationWithCnt.map(M.reduceAndMergeList)     #recommendList
+RecommendationListWOCnt = RecommendationWithCnt.map(M.reduceAndMergeList)
 
 # Ostatecznie tworzymy dictionary w postaci {U : [U1, U2,...]}
 # Aby łatwo zapisac dane do pliku lub je wyświetlic.
-FinalRecommendation = RecommendationListWOCnt.collectAsMap()  #recommendMap
+FinalRecommendation = RecommendationListWOCnt.collectAsMap()
 
 print("FinalRecommendation")
 print("DONE")
 
-def DataToFile(RecomMap, UserKeyList, N, fileName):      #pMap2file
+def DataToFile(RecomMap, UserKeyList, N, fileName):
     stream = open(fileName, 'w+')
     for key in UserKeyList:
         if key in RecomMap:
